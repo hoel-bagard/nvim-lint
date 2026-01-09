@@ -2,9 +2,18 @@ local function get_file_name()
   return vim.api.nvim_buf_get_name(0)
 end
 
+local function get_git_root()
+  local result = vim.fn.system('git rev-parse --show-toplevel')
+  if vim.v.shell_error == 0 then
+    return vim.trim(result)
+  end
+  return nil
+end
+
 return {
   cmd = 'actionlint',
   stdin = true,
+  cwd = get_git_root(),
   args = {
     '-format',
     '{{json .}}',
